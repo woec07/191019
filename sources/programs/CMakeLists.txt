@@ -13,7 +13,6 @@ message(STATUS "CMake Version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CM
 #Set this on the command line to change configuration.  Currently Supported: rv32im, rv32imzve32x
 set(RISCV_ARCH rv32im_zve32x CACHE STRING "Specify the configuration")
 set(MEM_LATENCY 1 CACHE STRING "Memory latency")
-set(MEM_W 32 CACHE STRING "Width of main memory data port in bits")
 
 
 #####
@@ -34,9 +33,13 @@ set(SOURCES_TOP ${CMAKE_CURRENT_SOURCE_DIR})
 
 #Include user defined configuration data
 include(${STUDENT_TOP}/vector_config.cmake)
+set(MEM_W ${VMEM_W}) # Before Caches, ensure MEM_W=VMEM_W
 message("Selected VREG_W = ${VREG_W}")
 message("Selected VMEM_W = ${VMEM_W}")
 message("Selected VPROC_PIPELINES = ${VPROC_PIPELINES}")
+message("Selected MEM_W = ${MEM_W}")
+
+
 
 
 #####
