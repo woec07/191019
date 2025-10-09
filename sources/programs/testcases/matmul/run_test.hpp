@@ -8,9 +8,9 @@
 
 bool run_test(int test_num);
 
-
 bool validate_output(int32_t* output, int32_t* reference, uint32_t rows, uint32_t cols);
 
 void report_diff(int32_t* output, int32_t* reference, uint32_t rows, uint32_t cols);
 
+void report_metadata(uint32_t numRowsA, uint32_t numColsA, uint32_t numColsB);
 #endif

@@ -36,6 +36,7 @@ bool run_test(int test_num)
     int32_t* mat_c = (int32_t*)mat_c_array[test_num];
     bool valid_out = validate_output(output, mat_c, numRowsA, numColsB);
 
+    report_metadata(numRowsA, numColsA, numColsB);
     //Report results
     if (valid_out)
     {
@@ -94,4 +95,11 @@ void report_diff(int32_t* output, int32_t* reference, uint32_t rows, uint32_t co
         printf("\n");
     }
     printf("\n");
+}
+
+void report_metadata(uint32_t numRowsA, uint32_t numColsA, uint32_t numColsB)
+{
+    printf("Testcase:\n\n");
+    printf("Matrix A [%d x %d] X Matrix B [%d x %d]:\n\n", numRowsA, numColsA, numColsA, numColsB);
+
 }
