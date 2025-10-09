@@ -249,7 +249,4 @@ int uart_printf(const char* format, ...)
 }
 
 
-//template <typename vec_type>
-
-
 

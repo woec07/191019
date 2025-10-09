@@ -16,16 +16,19 @@ void uart_gets(char *buf, int size);
 int uart_printf(const char* format, ...);
 
 template <typename vec_type> 
-void uart_print_vector(vec_type vector)
+static inline __attribute__((always_inline)) void uart_print_vector(vec_type vector_in)
  {
-    uint8_t vregister_val[4096]; //LMUL=8 * VREG_W=4096bits = 4096 total bytes (TODO: cap this at the architecture level)
-    uint32_t csr_vtype;
-    uint32_t cur_vl, cur_sew, cur_lmul, vlenb, incr;
+    volatile vec_type vector = vector_in;
+
+    volatile uint8_t vregister_val[4096]; //LMUL=8 * VREG_W=4096bits = 4096 total bytes (TODO: cap this at the architecture level)
+    volatile uint32_t csr_vtype;
+    volatile uint32_t cur_vl, cur_sew, cur_lmul, vlenb, incr;
 
     //read csrs for current configuration
     asm volatile ("csrr %0,vl"  : "=r" (cur_vl) );
     asm volatile ("csrr %0,vtype"   : "=r" (csr_vtype)  );
     asm volatile ("csrr %0,vlenb"   : "=r" (vlenb)  );
+
     cur_lmul = 0x00000007 & csr_vtype;
     cur_sew = 0x00000007 & (csr_vtype >> 3);
 
@@ -126,6 +129,6 @@ void uart_print_vector(vec_type vector)
     }
     uart_printf("\n\n");
     return;
+ 
  }
-
 #endif
