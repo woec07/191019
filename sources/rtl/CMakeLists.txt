@@ -47,7 +47,8 @@ message("Selected VREG_W = ${VREG_W}")
 message("Selected VMEM_W = ${VMEM_W}")
 message("Selected VPROC_PIPELINES = ${VPROC_PIPELINES}")
 
-set(MEM_W ${VMEM_W} CACHE STRING "MEM_W")
+set(MEM_W ${VMEM_W})
+message("Selected MEM_W = ${MEM_W}")
 set(MEM_SZ 4194304)
 
 ######################
