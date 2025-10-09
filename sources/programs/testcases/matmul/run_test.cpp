@@ -39,11 +39,11 @@ bool run_test(int test_num)
     //Report results
     if (valid_out)
     {
-        printf("PASS: TEST #%d\n",test_num);
+        printf("PASS:\n");
     }
     else
     {
-        printf("ERROR: OUTPUT MISMATCH TEST #%d\n",test_num);
+        printf("ERROR: OUTPUT MISMATCH\n");
         report_diff(output, mat_c, numRowsA, numColsB);
     }
 
