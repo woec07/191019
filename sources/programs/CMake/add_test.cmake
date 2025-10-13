@@ -49,7 +49,7 @@ macro(add_test_ref TEST TEST_NUM)
 
     #Add Test
     add_test(NAME ${TEST_NAME} 
-             COMMAND ./${MODEL_DIR}/verilated_model ${TEST_BUILD_DIR}/prog_${TEST_NAME}.txt ${MEM_W} 4194304 ${MEM_LATENCY} 1 ${VCD_TRACE_ARGS} #TODO: PASS ALL THESE ARGUMENTS IN FROM USER
+             COMMAND ./${MODEL_DIR}/verilated_model ${TEST_BUILD_DIR}/prog_${TEST_NAME}.txt ${MEM_W} 4194304 ${MEM_LATENCY} 1 ${TEST_BUILD_DIR}/result_${TEST_NAME}.log ${VCD_TRACE_ARGS} #TODO: PASS ALL THESE ARGUMENTS IN FROM USER
              WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../..)
              
     set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 120) #TODO: Find a reasonable timeout for these tests
@@ -112,12 +112,29 @@ macro(add_test_student TEST TEST_NUM)
 
     #Add Test
     add_test(NAME ${TEST_NAME} 
-             COMMAND ./${MODEL_DIR}/verilated_model ${TEST_BUILD_DIR}/../student_tests/prog_${TEST_NAME}.txt ${MEM_W} 4194304 ${MEM_LATENCY} 1 ${VCD_TRACE_ARGS} #TODO: PASS ALL THESE ARGUMENTS IN FROM USER
+             COMMAND ./${MODEL_DIR}/verilated_model ${TEST_BUILD_DIR}/../student_tests/prog_${TEST_NAME}.txt ${MEM_W} 4194304 ${MEM_LATENCY} 1 ${TEST_BUILD_DIR}/../student_tests/result_${TEST_NAME}.log ${VCD_TRACE_ARGS}#TODO: PASS ALL THESE ARGUMENTS IN FROM USER
              WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../..)
              
     set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 120) #TODO: Find a reasonable timeout for these tests
 
     message(STATUS "Successfully added ${TEST_NAME}")
 
+
+endmacro()
+
+
+macro(comparison TEST TEST_NUM) 
+    set(TEST_NAME ${TEST}_${TEST_NUM}_comparison)
+
+    
+
+    add_test(NAME ${TEST_NAME} 
+            COMMAND python3 ${SCRIPT_DIR}/compare_outputs.py ${TEST_BUILD_DIR}/result_${TEST}_${TEST_NUM}_ref.log ${TEST_BUILD_DIR}/../student_tests/result_${TEST}_${TEST_NUM}.log
+            WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+    set_tests_properties(${TEST_NAME} PROPERTIES DEPENDS ${TEST}_${TEST_NUM})
+    set_tests_properties(${TEST_NAME} PROPERTIES DEPENDS ${TEST}_${TEST_NUM}_ref)
+
+    message(STATUS "Successfully added ${TEST_NAME}")
 
 endmacro()

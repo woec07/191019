@@ -31,8 +31,8 @@ int main(int argc, char **argv) {
     //////////////////////////
     int exit_code = 0;
     
-    if (argc != 6 && argc != 7) {
-        fprintf(stderr, "Usage: %s PROG_PATHS_LIST MEM_W MEM_SZ MEM_LATENCY EXTRA_CYCLES [VCD WAVEFORM_FILE]\n", argv[0]);
+    if (argc != 7 && argc != 8) {
+        fprintf(stderr, "Usage: %s PROG_PATHS_LIST MEM_W MEM_SZ MEM_LATENCY EXTRA_CYCLES TEST_OUTPUT_PATH [VCD WAVEFORM_FILE]\n", argv[0]);
         return 1;
     }
 
@@ -70,6 +70,9 @@ int main(int argc, char **argv) {
         return 2;
     }
 
+    //Program UART Outputs
+    FILE *flog = fopen(argv[6], "w");
+
 
     //////////////////////////
     //Allocate memory latency buffers
@@ -98,11 +101,11 @@ int main(int argc, char **argv) {
     //Setup vcd trace file
     //////////////////////////
     VerilatedTrace_t *tfp = NULL;
-    if (argc == 7) {
+    if (argc == 8) {
         #ifdef TRACE_VCD
         tfp = new VerilatedTrace_t;
         top->trace(tfp, 99);  // Trace 99 levels of hierarchy
-        tfp->open(argv[6]);
+        tfp->open(argv[7]);
         #endif
     }
 
@@ -166,10 +169,11 @@ int main(int argc, char **argv) {
         //////////////////////////
         // Check Memory Mapped IO
         //////////////////////////
-        //UART Data Write.  Only takes lowest byte.  TODO: Verify functionality
+        //UART Data Write.  Only takes lowest byte.
         char w_port;
         if (check_memmapio(top->mem_addr_o, (top->mem_req_o && top->mem_we_o), 8, (unsigned char*)&(top->mem_wdata_o), 0x00000400u, &w_port)){
             putc(w_port, stdout);
+            putc(w_port, flog);
         }
 
         //////////////////////////
@@ -242,6 +246,7 @@ int main(int argc, char **argv) {
     free(mem_err_queue);
 
     fclose(fprogs);
+    fclose(flog);
 
     return exit_code;
 }
