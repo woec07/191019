@@ -4,8 +4,8 @@
 
 
 module vproc_top import vproc_pkg::*; #(
-        parameter int unsigned     MEM_W         = 32,  // memory bus width in bits
-        parameter int unsigned     VMEM_W        = 32,  // vector memory interface width in bits
+        parameter int unsigned     MEM_W         = vproc_config::MEM_W,  // memory bus width in bits
+        parameter int unsigned     VMEM_W        = vproc_config::VMEM_W,  // vector memory interface width in bits
         parameter vreg_type        VREG_TYPE     = VREG_GENERIC,
         parameter mul_type         MUL_TYPE      = MUL_GENERIC
     )(

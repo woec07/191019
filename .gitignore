@@ -1,4 +1,5 @@
 
 /sources/programs/build/*
 /sources/rtl/build/*
+/sources/synthesis/vi*
 /toolchain/*
