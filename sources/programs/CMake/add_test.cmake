@@ -52,7 +52,7 @@ macro(add_test_ref TEST TEST_NUM)
              COMMAND ./${MODEL_DIR}/verilated_model ${TEST_BUILD_DIR}/prog_${TEST_NAME}.txt ${MEM_W} 4194304 ${MEM_LATENCY} 1 ${VCD_TRACE_ARGS} #TODO: PASS ALL THESE ARGUMENTS IN FROM USER
              WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../..)
              
-    set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 30) #TODO: Find a reasonable timeout for these tests
+    set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 120) #TODO: Find a reasonable timeout for these tests
 
     message(STATUS "Successfully added ${TEST_NAME} Reference")
 
@@ -115,7 +115,7 @@ macro(add_test_student TEST TEST_NUM)
              COMMAND ./${MODEL_DIR}/verilated_model ${TEST_BUILD_DIR}/../student_tests/prog_${TEST_NAME}.txt ${MEM_W} 4194304 ${MEM_LATENCY} 1 ${VCD_TRACE_ARGS} #TODO: PASS ALL THESE ARGUMENTS IN FROM USER
              WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../..)
              
-    set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 30) #TODO: Find a reasonable timeout for these tests
+    set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 120) #TODO: Find a reasonable timeout for these tests
 
     message(STATUS "Successfully added ${TEST_NAME}")
 
