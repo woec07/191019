@@ -30,8 +30,14 @@ read_verilog [ glob $RTL_DIR/*.sv ]
 
 #Difficulties with variable -verilog_define statements/tcl parsing.  A dumb solution that works because of dependencies between ISAs
 
-synth_design -part xc7v585tffg1157-3 -top vproc_top -include_dirs { $RTL_DIR/vicuna2_core/cvfpu/src/common_cells/include/common_cells } -verilog_define XIF_ON -verilog_define RISCV_ZVE32X -verilog_define OLD_VICUNA -max_dsp 0
-
+if {[catch "synth_design -part xc7v585tffg1157-3 -top vproc_top -include_dirs { $RTL_DIR/vicuna2_core/cvfpu/src/common_cells/include/common_cells } -verilog_define XIF_ON -verilog_define RISCV_ZVE32X -verilog_define OLD_VICUNA -max_dsp 0" errorstring]} {
+  puts " Error - $errorstring "
+  exit
+}
+#catch "synth_design -part xc7v585tffg1157-3 -top vproc_top -include_dirs { $RTL_DIR/vicuna2_core/cvfpu/src/common_cells/include/common_cells } -verilog_define XIF_ON -verilog_define RISCV_ZVE32X -verilog_define OLD_VICUNA -max_dsp 0" success
+#if {!$success} {
+#    exit
+#}
 
 # Determine highest possible valid clock frequency, starting at 10Mhz
 set iter 0
@@ -41,12 +47,15 @@ create_clock -name Clk -period $clk_period [get_ports clk_i]
 #Set clock timing constraint before placement+routing
 set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets clk_i]
 
+if {[catch "place_design" errorstring]} {
+  puts " Error - $errorstring "
+  exit
+}
 
-place_design
-
-route_design
-
-
+if {[catch "route_design" errorstring]} {
+  puts " Error - $errorstring "
+  exit
+}
 
 set pass [expr {[get_property SLACK [get_timing_paths -delay_type min_max]] >= 0}]
 
