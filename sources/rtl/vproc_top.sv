@@ -40,6 +40,15 @@ module vproc_top import vproc_pkg::*; #(
                   "The current value of %d is invalid.", MEM_W);
     end
 
+    if ((vproc_config::PIPE_CNT) <= 1) begin
+        $fatal(1, "Vicuna Requires at least two vector pipelines.");
+    end
+
+    if ((vproc_config::VREG_W & (vproc_config::VREG_W - 1)) != 0 || vproc_config::VREG_W < 64) begin
+        $fatal(1, "The Vector Registers (VLEN) must be at least 64 and a power of two.  ",
+                  "The current value of %d is invalid.", vproc_config::VREG_W);
+    end
+
     // Reset synchronizer (sync reset is used for Vicuna by default, async reset for the core)
     logic [3:0] rst_sync_qn;
     logic sync_rst_n;
