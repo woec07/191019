@@ -132,8 +132,9 @@ macro(comparison TEST TEST_NUM)
             COMMAND python3 ${SCRIPT_DIR}/compare_outputs.py ${TEST_BUILD_DIR}/result_${TEST}_${TEST_NUM}_ref.log ${TEST_BUILD_DIR}/../student_tests/result_${TEST}_${TEST_NUM}.log
             WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-    set_tests_properties(${TEST_NAME} PROPERTIES DEPENDS ${TEST}_${TEST_NUM})
-    set_tests_properties(${TEST_NAME} PROPERTIES DEPENDS ${TEST}_${TEST_NUM}_ref)
+    #add_dependencies(${TEST_NAME} ${TEST}_${TEST_NUM} ${TEST}_${TEST_NUM}_ref)
+    #set_tests_properties(${TEST_NAME} PROPERTIES DEPENDS ${TEST}_${TEST_NUM})
+    #set_tests_properties(${TEST_NAME} PROPERTIES DEPENDS ${TEST}_${TEST_NUM}_ref)
 
     message(STATUS "Successfully added ${TEST_NAME}")
 

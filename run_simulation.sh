@@ -3,6 +3,11 @@
 #Top level script to build verilator model, build all test programs, and run all test programs.  
 
 
+if [ $# -ne 1 ]
+then
+    echo "Usage: ./run_simulation.sh TEST_NAME"
+    exit 1
+fi
 
 ######
 # Build Verilator Model
@@ -41,7 +46,7 @@ cmake ..
 
 make -j$(nproc)
 
-ctest
+ctest -R $1
 
 
 ######
