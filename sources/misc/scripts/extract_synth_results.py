@@ -9,10 +9,10 @@ for line in file_report:
         splitline = line.split("|")
         LUT = splitline[2]
         print("LUT Usage : " + LUT)
-        exit
+        exit()
     if "IO Placement failed due to overutilization" in line:
         print("VMEM_W Port is too large, not enough I/O for this design.  Reduce the size of this port to allow for successful synthesis.")
-        exit
+        exit()
 
 
 
