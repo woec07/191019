@@ -333,7 +333,11 @@ module vproc_top import vproc_pkg::*; #(
     vproc_core #(
         .XIF_ID_W           ( X_ID_WIDTH         ),
         .XIF_MEM_W          ( VMEM_W             ),
-        .VREG_TYPE          ( VREG_TYPE          ),
+        `ifdef SYNTH
+        .VREG_TYPE          ( VREG_XLNX_RAM32M   ),
+        `else
+        .VREG_TYPE          ( VREG_GENERIC       ),
+        `endif
         .MUL_TYPE           ( MUL_TYPE           ),
         .VLSU_FLAGS         ( VLSU_FLAGS         ),
         .BUF_FLAGS          ( BUF_FLAGS          ),

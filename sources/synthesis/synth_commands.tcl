@@ -1,4 +1,4 @@
-create_project vicuna -force -part xc7v585tffg1157-3
+create_project vicuna -force -part xc7s100fgga676-1Q
 
 #set RTL_DIR $env(RTL_DIR)
 #set SYNTH_DIR $env(SYNTH_DIR)
@@ -30,14 +30,10 @@ read_verilog [ glob $RTL_DIR/*.sv ]
 
 #Difficulties with variable -verilog_define statements/tcl parsing.  A dumb solution that works because of dependencies between ISAs
 
-if {[catch "synth_design -part xc7v585tffg1157-3 -top vproc_top -include_dirs { $RTL_DIR/vicuna2_core/cvfpu/src/common_cells/include/common_cells } -verilog_define XIF_ON -verilog_define RISCV_ZVE32X -verilog_define OLD_VICUNA -max_dsp 0" errorstring]} {
+if {[catch "synth_design -part xc7s100fgga676-1Q -top vproc_top -include_dirs { $RTL_DIR/vicuna2_core/cvfpu/src/common_cells/include/common_cells } -verilog_define XIF_ON -verilog_define RISCV_ZVE32X -verilog_define OLD_VICUNA -verilog_define SYNTH -max_dsp 0" errorstring]} {
   puts " Error - $errorstring "
   exit
 }
-#catch "synth_design -part xc7v585tffg1157-3 -top vproc_top -include_dirs { $RTL_DIR/vicuna2_core/cvfpu/src/common_cells/include/common_cells } -verilog_define XIF_ON -verilog_define RISCV_ZVE32X -verilog_define OLD_VICUNA -max_dsp 0" success
-#if {!$success} {
-#    exit
-#}
 
 # Determine highest possible valid clock frequency, starting at 10Mhz
 set iter 0
