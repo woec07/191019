@@ -17,7 +17,20 @@ message(STATUS "CMake Version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CM
 ####################
 
 project(Verilated-Builds LANGUAGES C CXX DESCRIPTION "Environment for Verilating Models")
-find_package(verilator HINTS ${TOOLCHAIN_TOP}/verilator)
+
+set(VERILATOR_ROOT /opt/hwe/verilator)
+list(APPEND CMAKE_PREFIX_PATH /opt/hwe/verilator/share/verilator)
+find_package(verilator REQUIRED)
+
+# If VERILATOR_EXECUTABLE is empty, set it manually
+if(NOT VERILATOR_EXECUTABLE)
+    set(VERILATOR_EXECUTABLE /opt/hwe/verilator/bin/verilator)  # or the actual path to your binary
+endif()
+
+
+message(STATUS "VERILATOR_EXECUTABLE = ${VERILATOR_EXECUTABLE}")
+message(STATUS "VERILATOR_ROOT = ${VERILATOR_ROOT}")
+
 
 # See whats going in CMake while getting the build process up and running
 set(CMAKE_VERBOSE_MAKEFILE ON)

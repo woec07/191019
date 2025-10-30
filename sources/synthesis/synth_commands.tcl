@@ -2,9 +2,10 @@ create_project vicuna -force -part xc7s100fgga676-1Q
 
 #set RTL_DIR $env(RTL_DIR)
 #set SYNTH_DIR $env(SYNTH_DIR)
+set current_dir [pwd]
 
-set RTL_DIR /home/parker/Desktop/vicuna_edu_setup/vicuna_edu/sources/rtl/
-set SYNTH_DIR /home/parker/Desktop/vicuna_edu_setup/vicuna_edu/sources/synthesis/
+set RTL_DIR $current_dir/../../sources/rtl/
+set SYNTH_DIR $current_dir/../../sources/synthesis/
 
 #Add sources.  Order matters
 
