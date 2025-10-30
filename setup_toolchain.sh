@@ -13,13 +13,13 @@ git submodule update --init --recursive
 #   Verilator setup
 ######
 
-#./sources/misc/scripts/build_verilator.sh
+./sources/misc/scripts/build_verilator.sh
 
 ######
 #   GCC setup
 ######
 
-#./sources/misc/scripts/build_gcc.sh rv32im_zve32x ilp32
+./sources/misc/scripts/build_gcc.sh rv32im_zve32x ilp32
 
 ######
 #   Download Srecord
