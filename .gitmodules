@@ -2,6 +2,6 @@
 	path = sources/rtl/vicuna2_core
 	url = https://github.com/vproc/vicuna2_core.git
 [submodule "sources/rtl/cv32e40x"]
-	path = sources/rtl/cv32e40x_f_zhf
+	path = sources/rtl/cv32e40x
 	url = https://github.com/ParkerJones567/cv32e40x_f_zhf.git
 	branch = f_zhf_fixes
