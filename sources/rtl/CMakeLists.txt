@@ -20,7 +20,7 @@ project(Verilated-Builds LANGUAGES C CXX DESCRIPTION "Environment for Verilating
 
 set(VERILATOR_ROOT /opt/hwe/verilator)
 list(APPEND CMAKE_PREFIX_PATH /opt/hwe/verilator/share/verilator)
-find_package(verilator HINTS /opt/hwe/verilator)
+find_package(verilator REQUIRED)
 
 # If VERILATOR_EXECUTABLE is empty, set it manually
 if(NOT VERILATOR_EXECUTABLE)
