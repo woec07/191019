@@ -2,14 +2,17 @@
 
 # Arguments: $1 - architecture for gcc
 #            $2 - ABI
-
-cd ../../../toolchain
+if [ ! -d /opt/hwe ]; then
+    echo "opt/hwe directory doesnt exist.  Creating it"
+    mkdir /opt/hwe
+fi
+cd /opt/hwe
 
 INSTALL_PATH=$PWD/GCC/$1
 
 if [ ! -d $PWD/GCC ]; then
-    echo "Toolchain/GCC directory doesnt exist.  Creating it"
-    mkdir GCC 
+    echo "/opt/hwe/GCC directory doesnt exist.  Creating it"
+    sudo mkdir GCC 
 fi
 
 #Build GCC
@@ -24,5 +27,5 @@ else
 fi
 
 echo "making GCC for $1 $2"
-./configure --prefix=$INSTALL_PATH --with-arch=$1 --with-abi=$2
-make -j8
+sudo ./configure --prefix=$INSTALL_PATH --with-arch=$1 --with-abi=$2
+sudo make -j8

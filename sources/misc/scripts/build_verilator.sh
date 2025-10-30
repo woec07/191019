@@ -1,6 +1,10 @@
 #!/bin/bash
 
-cd ../../../toolchain
+if [ ! -d /opt/hwe ]; then
+    echo "opt/hwe directory doesnt exist.  Creating it"
+    mkdir /opt/hwe
+fi
+cd /opt/hwe
 INSTALL_PATH=$PWD/verilator
 
 #Download
@@ -9,5 +13,5 @@ unset VERILATOR_ROOT
 cd verilator
 git checkout tags/v5.030
 autoconf
-./configure --prefix $INSTALL_PATH
-make -j8
+sudo ./configure --prefix $INSTALL_PATH
+sudo make -j8
