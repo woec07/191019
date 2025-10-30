@@ -31,7 +31,7 @@ macro(add_test_ref TEST TEST_NUM)
     add_custom_command(TARGET ${TEST_NAME}
                        POST_BUILD
                        COMMAND ${CMAKE_OBJCOPY} -O binary ${TEST_NAME}.elf ${TEST_NAME}.bin
-                       COMMAND srec_cat ${TEST_NAME}.bin -binary -offset 0x0000 -byte-swap 4 -o ${TEST_NAME}.vmem -vmem
+                       COMMAND ${TOOLCHAIN_TOP}/srec/bin/srec_cat ${TEST_NAME}.bin -binary -offset 0x0000 -byte-swap 4 -o ${TEST_NAME}.vmem -vmem
                        COMMAND rm -f prog_${TEST_NAME}.txt
                        COMMAND echo -n "${TEST_BUILD_DIR}/${TEST_NAME}.vmem" > prog_${TEST_NAME}.txt
                        COMMAND ${CMAKE_OBJDUMP} -D ${TEST_NAME}.elf > ${TEST_NAME}_dump.txt
@@ -94,7 +94,7 @@ macro(add_test_student TEST TEST_NUM)
     add_custom_command(TARGET ${TEST_NAME}
                        POST_BUILD
                        COMMAND ${CMAKE_OBJCOPY} -O binary ${TEST_NAME}.elf ${TEST_NAME}.bin
-                       COMMAND srec_cat ${TEST_NAME}.bin -binary -offset 0x0000 -byte-swap 4 -o ${TEST_NAME}.vmem -vmem
+                       COMMAND ${TOOLCHAIN_TOP}/srec/bin/srec_cat ${TEST_NAME}.bin -binary -offset 0x0000 -byte-swap 4 -o ${TEST_NAME}.vmem -vmem
                        COMMAND rm -f prog_${TEST_NAME}.txt
                        COMMAND echo -n "${TEST_BUILD_DIR}/../student_tests/${TEST_NAME}.vmem" > prog_${TEST_NAME}.txt
                        COMMAND ${CMAKE_OBJDUMP} -D ${TEST_NAME}.elf > ${TEST_NAME}_dump.txt
