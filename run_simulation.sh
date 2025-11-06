@@ -45,6 +45,10 @@ fi
 cmake ..
 
 make -j$(nproc)
+if [[ "$?" != "0" ]]; then
+    echo -e "\033[91m compilation failed!!!! \033[0m"
+    exit 1
+fi
 
 ctest -R $1
 

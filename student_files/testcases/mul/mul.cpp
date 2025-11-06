@@ -10,13 +10,7 @@ void mul(
 
   while (len > 0U)
   {
-    /* C = A * B */
 
-    /* Add and store result in destination buffer. */
-    *pDst++ = (int32_t)*pSrcA++ * (int32_t)*pSrcB++;
-
-    /* Decrement loop counter */
-    len--;
   }
   return;
 }
