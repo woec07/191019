@@ -24,7 +24,17 @@ fi
 
 cmake ..
 
+if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to Build Verilator Model.  Check your syntax and configuration variables in vector_config.cmake"
+    exit
+fi
+
 make -j$(nproc)
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to Build Verilator Model.  Errors should be caught earlier than this.  If you see this error, try deleting the /sources/rtl/build directory and building again."
+    exit
+fi
 
 cd ../../..
 
@@ -43,8 +53,12 @@ else
 fi
 
 cmake ..
-
 make -j$(nproc)
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to build C Programs.  Check your syntax your vector code C files."
+    exit
+fi
 
 ctest -R $1
 
