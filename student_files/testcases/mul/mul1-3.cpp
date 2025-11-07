@@ -1,5 +1,7 @@
 #include "mul.hpp"
 #include "riscv_vector.h"
+// this mul1-3.cpp deals with every optimization except loop unrolling -> so only: basic vectorcode, LMUL maximization, pipeline width + separation were done here
+// LUT USAGE : 17262
 void mul(
   const int16_t * pSrcA,
   const int16_t * pSrcB,

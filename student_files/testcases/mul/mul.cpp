@@ -2,7 +2,7 @@
 #include "riscv_vector.h"
 
 // mul.cpp with optimization technique 4, VREG_W = 128 - LOOP UNROLLING => TC4: [85.57%, 96.8%] improvement
-// LUT Usage: 17XXX
+// LUT Usage: 17262
 
 void mul(
   const int16_t * pSrcA,
