@@ -22,6 +22,7 @@ void add(
     vint8m4_t vec2 = __riscv_vle8_v_i8m4(pSrcB, vl);
 
     // so this __riscv_vwadd_vv_i16m1 takes two i8m1 inputs and sign extends it to 16 bit integers, as we have to take care of overflow when adding two 8bit integers
+    // 9 bit would be enough, but next size is i16
     // then it also adds the two inputs (it does it again for 32 elements at once)
     // also lmul has to be doubled as we need double space for one element
     vint16m8_t res_vec = __riscv_vwadd_vv_i16m8(vec1, vec2, vl);
