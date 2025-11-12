@@ -26,7 +26,6 @@ void matmul(
   // consider matrices where the # of columns of A  (rows of B) is less or equal to # of rows of A,
   // so we have matrices of B which do not have many rows (less iterations of inner loop)
   // narrow 
-  if (numColsA <= numRowsA){
     uint32_t j = 0;
     // take row after row from A
     while (j < numRowsA){
@@ -66,10 +65,7 @@ void matmul(
       j++;
     }
 }
-// if matrix is more than quadratic => wide matrix B
-else {
 
-}
   /* Return to application */
   return;
 }
