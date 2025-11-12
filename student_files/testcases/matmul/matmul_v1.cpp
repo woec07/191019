@@ -8,6 +8,9 @@ set(VREG_W 64)
 set(VMEM_W 32)
 set(VPROC_PIPELINES "${VMEM_W}:VLSU 32:VMUL 32:VALU,VSLD,VDIV,VELEM") # sequence is important
 */
+// TARGETS ACHIEVED
+// Optimization 4 - Loop Unrolling done: => TC_4 = [70.08, 84.52]% improvement| TC_8: [70.56, 84.53]%, LUT = 14132 -> TARGETS ACHIEVED
+
 
 void matmul(
   int8_t * pSrcA,
@@ -18,8 +21,7 @@ void matmul(
   uint32_t numColsB)
   
 {
-// TARGETS ACHIEVED - CURRENT VERSION
-// Optimization 4 - Loop Unrolling done: => TC_4 = [70.08, 84.52]% improvement| TC_8: [70.56, 84.53]%, LUT = 14132 -> TARGETS ACHIEVED
+
   uint32_t numRowsB = numColsA;
   
   // create two pointers to the arrays
