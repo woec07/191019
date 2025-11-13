@@ -1,4 +1,4 @@
 # VREG_W = VLEN
-set(VREG_W 128)
+set(VREG_W 64)
 set(VMEM_W 32)
 set(VPROC_PIPELINES "${VMEM_W}:VLSU 32:VMUL 32:VALU,VSLD,VDIV,VELEM") # sequence is important
