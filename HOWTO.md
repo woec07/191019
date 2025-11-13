@@ -1,4 +1,5 @@
 # General Apporach - Optimization
+most important: save between optimization steps and copy files so you have something to fall back!!!!
 
 ## 0. Find a good Algorithm
 find an algorithm which at best does not use strided load/stores and also reduction operations, at best an algorithm which doesn't use them at all
