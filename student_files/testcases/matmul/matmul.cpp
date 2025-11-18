@@ -1,4 +1,16 @@
 #include "matmul.hpp"
+#include "riscv_vector.h"
+
+// used vector_config.cmake in order to achieve targets
+/*
+# VREG_W = VLEN
+set(VREG_W 64)
+set(VMEM_W 32)
+set(VPROC_PIPELINES "${VMEM_W}:VLSU 32:VMUL 32:VALU,VSLD,VDIV,VELEM") # sequence is important
+*/
+// TARGETS ACHIEVED
+// Optimization 4 - Loop Unrolling done: => TC_4 = [70.08, 84.52]% improvement| TC_8: [70.56, 84.53]%, LUT = 14132 -> TARGETS ACHIEVED
+
 
 void matmul(
   int8_t * pSrcA,
@@ -9,75 +21,65 @@ void matmul(
   uint32_t numColsB)
   
 {
-        int32_t sum;                                     /* Accumulator */
-        int8_t *pIn1 = pSrcA;                    /* Input data matrix pointer A */
-        int8_t *pIn2 = pSrcB;                    /* Input data matrix pointer B */
-        int8_t *pInA = pSrcA;                    /* Input data matrix pointer A of Q15 type */
-        int8_t *pInB = pSrcB;                    /* Input data matrix pointer B of Q15 type */
-        int32_t *pOut = pDst;                     /* Output data matrix pointer */
-        int32_t *px;                                     /* Temporary output data matrix pointer */
-        uint32_t col, i = 0U, row = numRowsA, colCnt;  /* Loop counters */
 
-  {
-    /* The following loop performs the dot-product of each row in pSrcA with each column in pSrcB */
-    /* row loop */
-    do
-    {
-      /* Output pointer is set to starting address of the row being processed */
-      px = pOut + i;
+  uint32_t numRowsB = numColsA;
+  
+  // create two pointers to the arrays
+  volatile int8_t * currentElemA = pSrcA;
+  int8_t * currentElemB = pSrcB;
+  
+  uint32_t j = 0;
+  // take row after row from A
+  while (j < numRowsA){
+    size_t rem_colsB = numColsB;
+    while (rem_colsB > 0U) {
+      size_t vl = __riscv_vsetvl_e32m8(rem_colsB);
+      // calculate pointers to start from
+      currentElemA = pSrcA + j * numColsA;
+      currentElemB = pSrcB + numColsB - rem_colsB;
 
-      /* For every row wise process, column loop counter is to be initiated */
-      col = numColsB;
+      uint32_t i = 0;
 
-      /* For every row wise process, pIn2 pointer is set to starting address of pSrcB data */
-      pIn2 = pSrcB;
+      // initialize result vector with only
+      vint32m4_t result = __riscv_vmv_v_x_i32m4(0, vl); //ALU,  4 physical regs 
+      while (2* i < numRowsB){
+        // sum of used regs: 18 < 32
+        vl = __riscv_vsetvl_e8m1(rem_colsB);
+        vint8m1_t rowB_i1 = __riscv_vle8_v_i8m1(currentElemB, vl); // 1 physical regs (LSU)
+        int32_t a_i1 = (int32_t) *(currentElemA);
+        vint32m4_t rowBext_i1 = __riscv_vsext_vf4_i32m4(rowB_i1, vl); // 4 physical regs (ALU)
+        vint32m4_t immres = __riscv_vmacc_vx_i32m4(result ,a_i1, rowBext_i1, vl); // 4 physical regs (MUL)
+        
+        vint8m1_t rowB_i2 = __riscv_vle8_v_i8m1(currentElemB+numColsB, vl); //VLSU, 1 physical regs (LSU)
+        int32_t a_i2 = (int32_t) *(currentElemA+1);
+        vint32m4_t rowBext_i2 = __riscv_vsext_vf4_i32m4(rowB_i2, vl); // 4 physical regs (ALU)   
+        result = __riscv_vmacc_vx_i32m4(immres ,a_i2, rowBext_i2, vl); //(MUL)
 
-      /* column loop */
-      do
-      {
-        /* Set the variable sum, that acts as accumulator, to zero */
-        sum = 0;
-
-        /* Initiate pointer pIn1 to point to starting address of pSrcA */
-        pIn1 = pInA;
-
-        /* Matrix A columns number of MAC operations are to be performed */
-        colCnt = numColsA;
-
-        /* matrix multiplication */
-        while (colCnt > 0U)
-        {
-          /* c(m,n) = a(1,1) * b(1,1) + a(1,2) * b(2,1) + .... + a(m,p) * b(p,n) */
-
-          /* Perform multiply-accumulates */
-          sum += (int32_t) * pIn1++ * *pIn2;
-          pIn2 += numColsB;
-
-          /* Decrement loop counter */
-          colCnt--;
-        }
-        /* Store result in destination buffer */
-        *px++ = sum;
-
-        /* Decrement column loop counter */
-        col--;
-
-        /* Update pointer pIn2 to point to starting address of next column */
-        pIn2 = pInB + (numColsB - col);
-
-      } while (col > 0U);
-
-      /* Update pointer pSrcA to point to starting address of next row */
-      i = i + numColsB;
-      pInA = pInA + numColsA;
-
-      /* Decrement row loop counter */
-      row--;
-
-    } while (row > 0U);
+        currentElemA = currentElemA + 2;
+        currentElemB = currentElemB + 2* numColsB;
+        i++;
+      }
+      i = 2*i;
+      while (i < numRowsB){
+        // sum of used regs: 9 < 32
+        // takes the i-th row of B (1,2,3, ... numRowsB)
+        vl = __riscv_vsetvl_e8m1(rem_colsB);
+        vint8m1_t rowB_i1 = __riscv_vle8_v_i8m1(currentElemB, vl); //VLSU, 1 physical regs
+        vint32m4_t rowBext_i1 = __riscv_vsext_vf4_i32m4(rowB_i1, vl); // 4 physical regs
+        // takes the i_th element of row j of A      
+        int32_t a_i1 = (int32_t) *(currentElemA);
+        result = __riscv_vmacc_vx_i32m4(result, a_i1, rowBext_i1, vl);
+        currentElemA++;
+        currentElemB +=  numColsB;
+        i++;
+      }
+      // store first result row to destination
+      __riscv_vse32_v_i32m4(pDst, result, vl);
+      pDst += vl;
+      rem_colsB -= vl;
+    }
+    j++;
   }
-
   /* Return to application */
   return;
 }
-

@@ -54,6 +54,10 @@ fi
 
 cmake ..
 make -j$(nproc)
+if [[ "$?" != "0" ]]; then
+    echo -e "\033[91m compilation failed!!!! \033[0m"
+    exit 1
+fi
 
 if [ $? -ne 0 ]; then
     echo "ERROR: Failed to build C Programs.  Check your syntax your vector code C files."
