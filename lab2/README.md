@@ -10,12 +10,12 @@
 ## Performance Profile
 *The following metrices describe the behavior of a specific loop (inside our function)*
 * **Iteration Latency:** the time it takes to complete one single iteration of the loop.
-* **Iteration Interval:** the time between two loop iterations (if sequential: = iteration latency, if pipelined = 1).
+* **Initiation Interval:** the time between two loop iterations (if sequential: = iteration latency, if pipelined = 1).
 * **Trip Count:** the # of times the loop is executed.
 
 ## Total time
 * **Sequential:** `latency = trip count * iteration latency`
-* **Pipelined:** `latency = (trip count * iteration interval) + iteration latency`
+* **Pipelined:** `latency = (trip count * Initiation interval) + iteration latency`
     * *(first term: launch phase, i. e. start all iterations, second term: wait till last iteration has finished (one cycle))*
 
 ---
@@ -34,7 +34,7 @@ Divide Block RAM into smaller memory blocks (each Block has only 2 R/W ports): d
 * **Detection:** using (1) resource profile (memory bar that is active in all cycles, high utilization), (2) performance viewer (identify operation which has a staircase pattern - "drift" instead of a straight linear function) or (3) console warnings.
 
 **4. Task Level Parallelism - `[DATAFLOW]`**
-Global pipelining of the function calling construct - pipelined execution of subfunctions (not waiting until the full program is fully executed), apply the `[DATAFLOW]` directive at top level. The overall latency is then limited by the slowest subfunction. Note: this only is a optimization if our top-level function is called multiple times, as otherwise no acceleration can be made here.
+Global pipelining of the function calling construct - parallel execution of subfunctions (not waiting until the subfunction is finished, but as soon as the first data result of the subfunction is finished, the next subfunction already starts -> Datastream is necessary, otherwise it has to wait). The overall throughput is limited by the slowest subfunction. Note: this is only useful if a stream of data is generated within the subfunctions.
 
 **5. Flattening the Hierarchy - `[INLINE]`**
 After applying `[DATAFLOW]`, it is possible that there is a hierarchical bottleneck limitating `[DATAFLOW]` - i. e. a function call that takes way longer than the others (when running in parallel). Then have a look at this bottleneck-function: Check if there are sequential loops within this function. If so, use `[INLINE]` at the subfunction to parallelize these sequential loops and let the Dataflow controller (from the parent) see those internal loops and schedule them.
