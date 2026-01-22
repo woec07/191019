@@ -20,31 +20,8 @@
 * **Sequential:** `latency = trip count * iteration latency`
 * **Pipelined:** `latency = (trip count * Initiation interval) + iteration latency`
     * *(first term: launch phase, i. e. start all iterations, second term: wait till last iteration has finished (one cycle))*
-
 ---
-
-# 2.1 Methodologies
-
-**1. Loop Pipelining - `[PIPELINE]`**
-Simplest approach, always start with the most inner loop -> just to start a new loop iteration each cycle and not to wait until each iteration has completely finished (`[PIPELINE]` directive).
-
-**2. Loop Flattening - ev. move `[PIPELINE]` to outer loop**
-HLS tool tries to automatically flatten a inner nested loop into an outside loop into one single loop hierarchy (removing control overhead when traversing from inner to outer loop). Loop Flattening fails if there is ANY logic in-between the two nested loops -> WARNING in console.
-BUT: if there weren't perfect loop nests, it fails and we have to move the `[PIPELINE]` directive one level above (outer loop gets pipelined), as `[PIPELINE]` command forces imperfect loop nest to get fully unrolled (which results in more area used), but is necessary to improve latency and to meet pipeline "promise" (as now the HW build multiple instances of the same logic, and HW works parallel -> speedup).
-
-**3. Array Partitioning/Data dependency due to missing R/W ports - `[ARRAY_PARTITION]`**
-Divide Block RAM into smaller memory blocks (each Block has only 2 R/W ports): dividing into smaller blocks means that each array has 2 R/W ports respectively -> this ensures that I/O ports are no bottleneck for our unrolled/pipelined loop.
-* **Detection:** using (1) resource profile (memory bar that is active in all cycles, high utilization), (2) performance viewer (identify operation which has a staircase pattern - "drift" instead of a straight linear function) or (3) console warnings.
-
-**4. Task Level Parallelism - `[DATAFLOW]`**
-Global pipelining of the function calling construct - parallel execution of subfunctions (not waiting until the subfunction is finished, but as soon as the first data result of the subfunction is finished, the next subfunction already starts -> Datastream is necessary, otherwise it has to wait). The overall throughput is limited by the slowest subfunction. Note: this is only useful if a stream of data is generated within the subfunctions.
-
-**5. Flattening the Hierarchy - `[INLINE]`**
-After applying `[DATAFLOW]`, it is possible that there is a hierarchical bottleneck limitating `[DATAFLOW]` - i. e. a function call that takes way longer than the others (when running in parallel). Then have a look at this bottleneck-function: Check if there are sequential loops within this function. If so, use `[INLINE]` at the subfunction to parallelize these sequential loops and let the Dataflow controller (from the parent) see those internal loops and schedule them.
-
----
-
-# 2.2 Questions
+# 2.1 Questions
 
 **1. What is C-code validation and C-code synthesis in Vivado-HLS?**
 * **C-code validation:** ensuring the logical correctness of the implemented C-code
